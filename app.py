@@ -67,9 +67,15 @@ def get_matches(user_id):
 
 @app.route('/statitics/<int:user_id>/<string:day>', methods=['GET'])
 def selected_matches(user_id, day):
-    matches = Game.query.filter(extract('day', Game.date_start) == day[-2:], Game.user_id == user_id).all()
-    print('aaaaa', matches)
-    return render_template('statistics.html', matches=matches)
+    matches = Game.query.filter(extract('day', Game.date_start) == day[-2:], Game.user_id == user_id, Game.result =='win').all()
+    print(matches)
+    #
+    count_result = {
+        'win': len(Game.query.filter(extract('day', Game.date_start) == day[-2:], Game.user_id == user_id, Game.result == 'win').all()),
+        'lose':len(Game.query.filter(extract('day', Game.date_start) == day[-2:], Game.user_id == user_id, Game.result == 'lose').all()),
+        'draft':len(Game.query.filter(extract('day', Game.date_start) == day[-2:], Game.user_id == user_id, Game.result == 'draft').all())
+    }
+    return render_template('statistics.html', count_result=count_result,day=day)
 
 
 @app.route('/game/<int:id>', methods=['POST', 'GET'])

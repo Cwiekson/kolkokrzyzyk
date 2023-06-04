@@ -3,7 +3,23 @@
 
 
   <h1> Statistics</h1>
+  {% if count_result %}
+  <table>
+    <tr>
+    <td>Date</td>
+    <td>Win</td>
+    <td>Lose</td>
+   <td> Draft</td>
+  </tr>
+  <tr>
+    <td>{{day }}</td>
+    <td>{{ count_result.win }}</td>
+    <td>{{ count_result.lose }}</td>
+    <td>{{ count_result.draft }}</td>
+  </tr>
+  </table>
 
+  {% else %}
   <table>
   <tr>
     <td>Date</td>
@@ -18,5 +34,5 @@
     </tr>
   {% endfor %}
   </table>
-
+{% endif %}
 {% endblock %}
