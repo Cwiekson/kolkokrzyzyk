@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block head %}
+    {% if not user %}
+
+  <h1> Create User</h1>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if user %}
+    <h3>Your coins {{ user.credits }}</h3>
+    {% if user.matches %}
+      <h3>Results your last game: {{ user.matches[-1].result }}</h3>
+    {% endif %}
+    <a href="/update/{{user.id }}">Add</a>
+    <a href="/game/{{ user.id }}">Game</a>
+    <a href="/statitics/{{ user.id }}">Statistics</a>
+
+  {% else %}
+  <form action="/" method="POST">
+  <input type="submit" value="Add User">
+  </form>
+  {% endif %}
+{% endblock  %}

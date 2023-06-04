@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kółko i krzyżyk</title>
+  <style>
+      .board {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          grid-gap: 10px;
+          width: 300px;
+          margin: 0 auto;
+          text-align: center;
+      }
+
+      .cell {
+          width: 100px;
+          height: 100px;
+          border: 1px solid #ccc;
+          font-size: 2em;
+          line-height: 100px;
+          cursor: pointer;
+      }
+  </style>
+</head>
+<body>
+<h1 style="text-align:center">Kółko i krzyżyk</h1>
+
+<div class="board">
+  {% for i in range(9) %}
+    <button class="cell" onclick="playMove({{ i }})"></button>
+  {% endfor %}
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let board = ['', '', '', '', '', '', '', '', ''];
+    let our_positions = [];
+    let enemy_positions = [];
+    const our_choice = 'X'
+    const enemy_choice = 'O'
+
+    function playEnemy(enemy_position) {
+        enemy_positions.push(enemy_position)
+        updateBoard(enemy_position, enemy_choice);
+        $.ajax({
+            url: '/play',
+            type: 'POST',
+            data: {
+                board: board.join(''),
+                our_positions: JSON.stringify(our_positions),
+                enemy_positions: JSON.stringify(enemy_positions),
+
+            },
+            success: function (response) {
+                if (response.winner) {
+                    alert(response.winner + '!');
+                }
+
+
+            }
+        });
+    }
+
+    function playMove(our_position) {
+        if (board[our_position] === '') {
+            board[our_position] = our_choice;
+            our_positions.push(our_position)
+            updateBoard(our_position, our_choice);
+            $.ajax({
+                url: '/play',
+                type: 'POST',
+                data: {
+                    game_id:{{ games_id }},
+                    board: board.join(''),
+                    our_positions: JSON.stringify(our_positions),
+                    enemy_positions: JSON.stringify(enemy_positions),
+                },
+                success: function (response) {
+                    if (response.winner) {
+                        window.location.href = '/update/' + response.user_id
+                    }
+                    enemy_positions.push(response.enemy_position)
+                    updateBoard(response.enemy_position, enemy_choice);
+
+                }
+            });
+
+        }
+    }
+
+    function updateBoard(position, mark) {
+        let cells = $('.board .cell');
+        $(cells[position]).text(mark);
+        $(cells[position]).prop('disabled', true)
+    }
+</script>
+</body>
+</html>

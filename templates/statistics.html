@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block head %}
+
+
+  <h1> Statistics</h1>
+
+  <table>
+  <tr>
+    <td>Date</td>
+    <td>Time</td>
+    <td>result</td>
+  </tr>
+  {% for match in matches %}
+    <tr>
+      <td><a href="/statitics/{{ user_id }}/{{ match.date_start.strftime('%Y-%m-%d') }}" >{{ match.date_start.strftime('%Y-%m-%d') }}</a></td>
+    <td>{{ match.time.strftime('%H:%M:%S') }}</td>
+    <td>{{ match.result }}</td>
+    </tr>
+  {% endfor %}
+  </table>
+
+{% endblock %}
